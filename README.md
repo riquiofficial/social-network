@@ -2,7 +2,12 @@
 
 Basic Twitter-like Social Networking app where users can write posts, like posts and follow other users
 
-Technologies used:
+## Video
+
+https://www.youtube.com/watch?v=0QVIwZJmKyo&ab_channel=rqwebdev
+
+## Technologies used:
+
 HTML
 CSS
 JavaScript
