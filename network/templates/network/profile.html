@@ -1,0 +1,88 @@
+{% extends "network/layout.html" %}{% block title %}Social Network - {{title}}{%endblock%} {% block body %}
+<div></div>
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>{{user.username}}
+        {% if request.user.is_authenticated %}
+        {% if not own_profile %}
+        
+        {% if not already_following %}
+            <form class="text-right" action="{% url 'follow' user.username 'True' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" id="follow" class="btn btn-primary ml-4">Follow</button>
+            </form>
+        {%else%}
+            <form class="text-right" action="{% url 'follow' user.username 'False' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" id="unfollow" class="btn btn-secondary ml-4">Unfollow</button>
+            </form>
+        {%endif%}
+        {%endif%}
+        {% endif %} 
+    </h1>
+    <hr class="my-3" />
+    <div class="row">
+      <div class="col-6">
+        <h3 class="text-center">Following: {{total_following}}</h3>
+        <ul class="list-group">
+          {% for follower in user.following.all %}
+          <a href="/profile/{{follower}}"><li class="list-group-item">{{follower}}</li></a>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-6">
+        <h3 class="text-center">Followers: {{total_followers}}</h3>
+        <ul class="list-group">
+          {% for follower in followers %}
+          <a href="/profile/{{follower}}"><li class="list-group-item">{{follower}}</li></a>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+</div>
+</div>
+<div class="container">
+      <div class="row">
+        
+            {% for post in posts %}
+            <div class="container">
+              <div class="card">
+                <div class="card-body">
+                    <a href="{% url 'user_profile' post.author %}"><h5 class="card-title"><strong>{{post.author}}</strong></h5></a>
+                    <p class="card-text" id="card-text{{post.id}}">{{post.content}}</p>
+                  <h6 class="card-subtitle mb-2 text-muted" id="date{{post.id}}">
+                    <small>{{post.date}}</small>
+                  </h6>
+                 
+                  <p class="text-muted mt-0 text-right like{{post.id}}">{{post.total_likes}} Likes
+                    {% if request.user.is_authenticated %}
+                    <div class="text-right">
+                      <form action="" class="like-form">
+                        {%if request.user == post.author %}
+                        <button class="btn btn-info btn-sm btn-edit edit{{post.id}}">Edit</button>
+                        {%endif%}
+                      {%csrf_token%}
+                        {% if request.user in post.likes.all %}
+                            <button id="{{post.id}}" class="btn btn-secondary btn-sm btn-like">Un-Like</button>
+                        {% else %}
+                            <button id="{{post.id}}" class="btn btn-primary btn-sm btn-like">Like</button>
+                        {%endif%}
+                      </form>
+                      </div>
+                    {%endif%}
+                  </p>
+                  
+                </div>
+              </div>
+            </div>
+            {%endfor%}
+        
+    </div>
+
+    
+  
+</div>
+{% endblock %}

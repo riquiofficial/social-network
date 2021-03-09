@@ -1,0 +1,70 @@
+{% extends "network/layout.html" %} {% block title %}Social Network - {{title}}{%endblock%} {% block body %}
+<div class="container mt-4">
+  <div class="jumbotron">
+    <h1>All Posts</h1>
+    {% if request.user.is_authenticated %}
+    <hr class="my-4" />
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">{{new_post}}</div>
+      <p><small class="text-muted">Max 250 chars</small></p>
+      <div class="text-right">
+        <button id="submit" type="submit" class="btn btn-primary">New Post</button>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% for post in posts %}
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+        <a href="{% url 'user_profile' post.author %}"><h5 class="card-title"><strong>{{post.author}}</strong></h5></a>
+        <p class="card-text" id="card-text{{post.id}}">{{post.content}}</p>
+      <h6 class="card-subtitle mb-2 text-muted" id="date{{post.id}}">
+        <small>{{post.date}}</small>
+      </h6>
+     
+      <p class="text-muted mt-0 text-right like{{post.id}}">{{post.total_likes}} Likes
+        {% if request.user.is_authenticated %}
+        <div class="text-right">
+          <form action="" class="like-form">
+            {%if request.user == post.author %}
+            <button class="btn btn-info btn-sm btn-edit edit{{post.id}}">Edit</button>
+            {%endif%}
+          {%csrf_token%}
+            {% if request.user in post.likes.all %}
+                <button id="{{post.id}}" class="btn btn-secondary btn-sm btn-like">Un-Like</button>
+            {% else %}
+                <button id="{{post.id}}" class="btn btn-primary btn-sm btn-like">Like</button>
+            {%endif%}
+          </form>
+          </div>
+        {%endif%}
+      </p>
+      
+    </div>
+  </div>
+</div>
+{%endfor%}
+
+
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center my-4">
+        <li class="{%if posts.has_previous %} page-item {%else%} page-item disabled {%endif%}%"><a class="page-link" href="?page=1">&laquo; first</a></li>
+        <li class="{%if posts.has_previous %} page-item {%else%} page-item disabled {%endif%}"><a class="page-link" href="?page={% if posts.has_previous %}{{posts.previous_page_number}}{%endif%}">previous</a></li>
+        
+        {% for number in posts.paginator.page_range %}
+        <li class="page-item {%if number == posts.number%} active {% endif %}"><a class="page-link" href="?page={{number}}">{{number}}</a></li>
+        {%endfor%}
+       
+        <li class="{%if posts.has_next %} page-item {%else%} page-item disabled {%endif%}"><a class="page-link" href="?page={% if posts.has_next %}{{posts.next_page_number}}{%endif%}">next</a></li>
+        <li class="{%if posts.has_next %} page-item {%else%} page-item disabled {%endif%}"><a class="page-link" href="?page={{ posts.paginator.num_pages }}">last &raquo;</a></li>    
+       
+      
+    </ul>
+
+
+</nav>{% endblock %}
