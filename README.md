@@ -1,6 +1,6 @@
 # Social Network
 
-Basic Twitter-like Social Networking app where users can write posts, like posts and follow other users
+The goal of this project was to create a functional Twitter-like Social Networking app where users can write posts, like posts, edit posts, view profiles and follow other users. Focus was more on the back end with Django and making API calls using JavaScript's Fetch API to update the page.
 
 ## Video
 
